@@ -5,7 +5,6 @@ const supabase = require('../db/connection');
 const { sendAccessRequestEmail } = require('../mailer');
 require('dotenv').config();
 
-// GET /api/status?locationId=xxx
 router.get('/status', async (req, res) => {
   const { locationId } = req.query;
   if (!locationId) return res.status(400).json({ error: 'locationId is required' });
@@ -27,8 +26,6 @@ router.get('/status', async (req, res) => {
   res.json({ status: data.status, name: data.name });
 });
 
-// POST /api/submit
-// Body: { locationId, name, email, phone, website }
 router.post('/submit', express.json(), async (req, res) => {
   const { locationId, name, email, phone, website } = req.body;
 
@@ -68,7 +65,6 @@ router.post('/submit', express.json(), async (req, res) => {
     await sendAccessRequestEmail({ locationId, name, email, phone, website, approveUrl, rejectUrl });
   } catch (err) {
     console.error('Failed to send owner notification email:', err.message);
-    // Submission is already saved - don't fail the request just because email had an issue.
   }
 
   res.json({ ok: true, status: 'pending' });

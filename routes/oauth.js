@@ -4,7 +4,6 @@ const router = express.Router();
 const supabase = require('../db/connection');
 require('dotenv').config();
 
-// GHL redirects here after the user installs the app and authorizes it.
 router.get('/callback', async (req, res) => {
   const { code } = req.query;
 
@@ -21,7 +20,8 @@ router.get('/callback', async (req, res) => {
         client_secret: process.env.GHL_CLIENT_SECRET,
         grant_type: 'authorization_code',
         code,
-        redirect_uri: process.env.GHL_REDIRECT_URI
+        redirect_uri: process.env.GHL_REDIRECT_URI,
+        user_type: 'Location'
       }),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
