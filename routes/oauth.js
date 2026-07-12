@@ -135,15 +135,7 @@ router.get("/callback", async (req, res) => {
         );
     }
 
-    return res.send(`
-  <html>
-    <body style="font-family:sans-serif;text-align:center;padding:60px 20px;">
-      <h2>✅ Installed successfully</h2>
-      <p>Go back to your GHL sub-account and click <strong>ProjectScoutIQ</strong> in the left menu to get started.</p>
-      <p style="color:#6b7280;font-size:13px;">You can close this tab.</p>
-    </body>
-  </html>
-`);
+    return res.redirect(`https://app.gohighlevel.com/v2/location/${resolvedLocationId}/dashboard`);
   }
 
   if (!locationId) {
@@ -173,15 +165,7 @@ router.get("/callback", async (req, res) => {
       .send("Something went wrong saving the install. Please contact support.");
   }
 
-  res.send(`
-  <html>
-    <body style="font-family:sans-serif;text-align:center;padding:60px 20px;">
-      <h2>✅ Installed successfully</h2>
-      <p>Go back to your GHL sub-account and click <strong>ProjectScoutIQ</strong> in the left menu to get started.</p>
-      <p style="color:#6b7280;font-size:13px;">You can close this tab.</p>
-    </body>
-  </html>
-`);
+  res.redirect(`https://app.gohighlevel.com/v2/location/${locationId}/dashboard`);
 });
 
 module.exports = router;
