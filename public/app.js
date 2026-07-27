@@ -2,8 +2,6 @@ const app = document.getElementById('app');
 const params = new URLSearchParams(window.location.search);
 const locationId = params.get('locationId');
 
-let pollTimer = null;
-
 const brandHeader = `
   <div class="brand-row">
     <div class="brand-logo">LOGO</div>
@@ -74,8 +72,10 @@ function renderForm() {
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error('submit failed');
-      renderPending();
-      startPolling();
+      // Show the calculator preview right away. The owner still gets notified
+      // by email in the background and approves/rejects separately - that
+      // decision doesn't gate this preview screen.
+      renderCalculatorPreview();
     } catch (err) {
       document.getElementById('form-error').style.display = 'block';
       btn.disabled = false;
@@ -84,50 +84,11 @@ function renderForm() {
   });
 }
 
-function renderPending() {
+async function renderCalculatorPreview() {
   app.innerHTML = `
     <div class="card-header">${brandHeader}
-      <h1>Reviewing your details</h1>
-      <p class="sub">We're reviewing your details now. Once approved, we'll send you the embed code for your live website.</p>
-    </div>
-    <div class="card-body">
-      <div class="steps">
-        <div class="step-dot">1</div>
-        <div class="step-line"></div>
-        <div class="step-dot active">2</div>
-        <div class="step-label">Review</div>
-      </div>
-      <div class="center-state">
-        <div class="spinner"></div>
-      </div>
-      <div class="footer-row">
-        <span class="footer-note">This page updates automatically - no need to refresh.</span>
-        <span class="powered-by">Powered by <strong>ProjectScoutIQ</strong></span>
-      </div>
-    </div>
-  `;
-}
-
-function renderRejected() {
-  app.innerHTML = `
-    <div class="card-header">${brandHeader}
-      <h1>Access not approved</h1>
-      <p class="sub">Sorry, you're not approved to use this right now.</p>
-    </div>
-    <div class="card-body">
-      <div class="center-state">
-        <div class="state-icon">🚫</div>
-        <p class="sub">Contact us if you think this is a mistake.</p>
-      </div>
-    </div>
-  `;
-}
-
-async function renderApproved() {
-  app.innerHTML = `
-    <div class="card-header">${brandHeader}
-      <h1>You're approved</h1>
-      <p class="sub">Here's your live calculator preview.</p>
+      <h1>Your live preview</h1>
+      <p class="sub">Try it out below. We'll email you the embed code once your request is reviewed.</p>
     </div>
     <div class="card-body full-bleed">
       <div class="center-state"><div class="spinner"></div></div>
@@ -140,7 +101,7 @@ async function renderApproved() {
     body.innerHTML = `<iframe class="calculator" src="${calculatorUrl}?locationId=${encodeURIComponent(locationId)}"></iframe>`;
   } catch (err) {
     const body = app.querySelector('.card-body.full-bleed');
-    body.innerHTML = `<p class="sub" style="padding:20px;">Approved, but we couldn't load the calculator. Please refresh.</p>`;
+    body.innerHTML = `<p class="sub" style="padding:20px;">We couldn't load the preview. Please refresh.</p>`;
   }
 }
 
@@ -150,37 +111,20 @@ async function checkStatus() {
     const data = await res.json();
 
     if (data.status === 'none') {
-      stopPolling();
       renderForm();
-    } else if (data.status === 'pending') {
-      renderPending();
-    } else if (data.status === 'approved') {
-      stopPolling();
-      renderApproved();
-    } else if (data.status === 'rejected') {
-      stopPolling();
-      renderRejected();
+    } else {
+      // pending, approved, or rejected - all show the preview.
+      // The approval decision is tracked on the backend and emailed
+      // separately; it doesn't change what's shown here.
+      renderCalculatorPreview();
     }
   } catch (err) {
     console.error('Status check failed', err);
   }
 }
 
-function startPolling() {
-  stopPolling();
-  pollTimer = setInterval(checkStatus, 15000);
-}
-
-function stopPolling() {
-  if (pollTimer) clearInterval(pollTimer);
-}
-
 if (!locationId) {
   renderMissingLocation();
 } else {
-  checkStatus().then(() => {
-    fetch(`/api/status?locationId=${encodeURIComponent(locationId)}`)
-      .then(r => r.json())
-      .then(d => { if (d.status === 'pending') startPolling(); });
-  });
+  checkStatus();
 }
