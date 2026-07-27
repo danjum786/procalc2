@@ -4,30 +4,52 @@ const locationId = params.get('locationId');
 
 let pollTimer = null;
 
+const brandHeader = `
+  <div class="brand-row">
+    <div class="brand-logo">LOGO</div>
+    <div class="brand-label">Builder Logo</div>
+  </div>
+`;
+
 function renderMissingLocation() {
   app.innerHTML = `
-    <div class="state-icon">⚠️</div>
-    <h1>Missing location</h1>
-    <p class="sub">This page must be opened from inside your GHL sub-account menu.</p>
+    <div class="card-header">${brandHeader}
+      <h1>Missing location</h1>
+      <p class="sub">This page must be opened from inside your GHL sub-account menu.</p>
+    </div>
   `;
 }
 
 function renderForm() {
   app.innerHTML = `
-    <h1>Get started with ProjectScoutIQ</h1>
-    <p class="sub">Fill in your details to request access. We'll review and confirm shortly.</p>
-    <form id="access-form">
-      <label>Name</label>
-      <input type="text" name="name" required />
-      <label>Email</label>
-      <input type="email" name="email" required />
-      <label>Phone</label>
-      <input type="tel" name="phone" />
-      <label>Website</label>
-      <input type="url" name="website" placeholder="https://" />
-      <button type="submit">Submit request</button>
-      <p class="error" id="form-error">Something went wrong. Please try again.</p>
-    </form>
+    <div class="card-header">${brandHeader}
+      <h1>Get your live embed</h1>
+      <p class="sub">A few quick details so we can review and set you up.</p>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step-dot active">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot">2</div>
+        <div class="step-label">Your details</div>
+      </div>
+      <form id="access-form">
+        <label>Name</label>
+        <input type="text" name="name" required />
+        <label>Email</label>
+        <input type="email" name="email" required />
+        <label>Phone</label>
+        <input type="tel" name="phone" />
+        <label>Website</label>
+        <input type="url" name="website" placeholder="https://" />
+        <button class="primary" type="submit">Continue →</button>
+        <p class="error" id="form-error">Something went wrong. Please try again.</p>
+      </form>
+      <div class="footer-row">
+        <span class="footer-note">We'll only use this to review your access.</span>
+        <span class="powered-by">Powered by <strong>ProjectScoutIQ</strong></span>
+      </div>
+    </div>
   `;
 
   document.getElementById('access-form').addEventListener('submit', async (e) => {
@@ -57,35 +79,68 @@ function renderForm() {
     } catch (err) {
       document.getElementById('form-error').style.display = 'block';
       btn.disabled = false;
-      btn.textContent = 'Submit request';
+      btn.textContent = 'Continue →';
     }
   });
 }
 
 function renderPending() {
   app.innerHTML = `
-    <div class="spinner"></div>
-    <h1>Reviewing your details</h1>
-    <p class="sub">We're checking your request. This page will update automatically once there's a decision - no need to refresh.</p>
+    <div class="card-header">${brandHeader}
+      <h1>Reviewing your details</h1>
+      <p class="sub">We're reviewing your details now. Once approved, we'll send you the embed code for your live website.</p>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step-dot">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot active">2</div>
+        <div class="step-label">Review</div>
+      </div>
+      <div class="center-state">
+        <div class="spinner"></div>
+      </div>
+      <div class="footer-row">
+        <span class="footer-note">This page updates automatically - no need to refresh.</span>
+        <span class="powered-by">Powered by <strong>ProjectScoutIQ</strong></span>
+      </div>
+    </div>
   `;
 }
 
 function renderRejected() {
   app.innerHTML = `
-    <div class="state-icon">🚫</div>
-    <h1>Access not approved</h1>
-    <p class="sub">Sorry, you're not approved to use this app right now. Contact us if you think this is a mistake.</p>
+    <div class="card-header">${brandHeader}
+      <h1>Access not approved</h1>
+      <p class="sub">Sorry, you're not approved to use this right now.</p>
+    </div>
+    <div class="card-body">
+      <div class="center-state">
+        <div class="state-icon">🚫</div>
+        <p class="sub">Contact us if you think this is a mistake.</p>
+      </div>
+    </div>
   `;
 }
 
 async function renderApproved() {
-  app.innerHTML = `<div class="spinner"></div>`;
+  app.innerHTML = `
+    <div class="card-header">${brandHeader}
+      <h1>You're approved</h1>
+      <p class="sub">Here's your live calculator preview.</p>
+    </div>
+    <div class="card-body full-bleed">
+      <div class="center-state"><div class="spinner"></div></div>
+    </div>
+  `;
   try {
     const res = await fetch('/api/config');
     const { calculatorUrl } = await res.json();
-    app.innerHTML = `<iframe class="calculator" src="${calculatorUrl}?locationId=${encodeURIComponent(locationId)}"></iframe>`;
+    const body = app.querySelector('.card-body.full-bleed');
+    body.innerHTML = `<iframe class="calculator" src="${calculatorUrl}?locationId=${encodeURIComponent(locationId)}"></iframe>`;
   } catch (err) {
-    app.innerHTML = `<p class="sub">Approved, but we couldn't load the calculator. Please refresh.</p>`;
+    const body = app.querySelector('.card-body.full-bleed');
+    body.innerHTML = `<p class="sub" style="padding:20px;">Approved, but we couldn't load the calculator. Please refresh.</p>`;
   }
 }
 
