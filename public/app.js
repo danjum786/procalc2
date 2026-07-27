@@ -1,6 +1,6 @@
-const app = document.getElementById('app');
+const app = document.getElementById("app");
 const params = new URLSearchParams(window.location.search);
-const locationId = params.get('locationId');
+const locationId = params.get("locationId");
 
 const brandHeader = `
   <div class="brand-row">
@@ -50,67 +50,65 @@ function renderForm() {
     </div>
   `;
 
-  document.getElementById('access-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
+  document
+    .getElementById("access-form")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector("button");
+      btn.disabled = true;
+      btn.textContent = "Submitting...";
 
-    const formData = new FormData(e.target);
-    const payload = {
-      locationId,
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      website: formData.get('website')
-    };
+      const formData = new FormData(e.target);
+      const payload = {
+        locationId,
+        name: formData.get("name"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        website: formData.get("website"),
+      };
 
-    try {
-      const res = await fetch('/api/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error('submit failed');
-      // Show the calculator preview right away. The owner still gets notified
-      // by email in the background and approves/rejects separately - that
-      // decision doesn't gate this preview screen.
-      renderCalculatorPreview();
-    } catch (err) {
-      document.getElementById('form-error').style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Continue →';
-    }
-  });
+      try {
+        const res = await fetch("/api/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("submit failed");
+        // Show the calculator preview right away. The owner still gets notified
+        // by email in the background and approves/rejects separately - that
+        // decision doesn't gate this preview screen.
+        renderCalculatorPreview();
+      } catch (err) {
+        document.getElementById("form-error").style.display = "block";
+        btn.disabled = false;
+        btn.textContent = "Continue →";
+      }
+    });
 }
 
 async function renderCalculatorPreview() {
-  app.innerHTML = `
-    <div class="card-header">${brandHeader}
-      <h1>Your live preview</h1>
-      <p class="sub">Try it out below. We'll email you the embed code once your request is reviewed.</p>
-    </div>
-    <div class="card-body full-bleed">
-      <div class="center-state"><div class="spinner"></div></div>
-    </div>
-  `;
+  // No card chrome here - the calculator's own page already has its full
+  // design (header, steps, footer). We just fill the frame with it directly.
+  document.body.classList.add('calc-mode');
+  app.className = '';
+  app.innerHTML = `<div style="text-align:center;padding-top:120px;"><div class="spinner"></div></div>`;
   try {
     const res = await fetch('/api/config');
     const { calculatorUrl } = await res.json();
-    const body = app.querySelector('.card-body.full-bleed');
-    body.innerHTML = `<iframe class="calculator" src="${calculatorUrl}?locationId=${encodeURIComponent(locationId)}"></iframe>`;
+    app.innerHTML = `<iframe class="calc-view" src="${calculatorUrl}?locationId=${encodeURIComponent(locationId)}"></iframe>`;
   } catch (err) {
-    const body = app.querySelector('.card-body.full-bleed');
-    body.innerHTML = `<p class="sub" style="padding:20px;">We couldn't load the preview. Please refresh.</p>`;
+    app.innerHTML = `<p class="sub" style="padding:20px;text-align:center;">We couldn't load the preview. Please refresh.</p>`;
   }
 }
 
 async function checkStatus() {
   try {
-    const res = await fetch(`/api/status?locationId=${encodeURIComponent(locationId)}`);
+    const res = await fetch(
+      `/api/status?locationId=${encodeURIComponent(locationId)}`,
+    );
     const data = await res.json();
 
-    if (data.status === 'none') {
+    if (data.status === "none") {
       renderForm();
     } else {
       // pending, approved, or rejected - all show the preview.
@@ -119,7 +117,7 @@ async function checkStatus() {
       renderCalculatorPreview();
     }
   } catch (err) {
-    console.error('Status check failed', err);
+    console.error("Status check failed", err);
   }
 }
 
