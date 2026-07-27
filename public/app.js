@@ -87,10 +87,8 @@ function renderForm() {
 }
 
 async function renderCalculatorPreview() {
-  // No card chrome here - the calculator's own page already has its full
-  // design (header, steps, footer). We just fill the frame with it directly.
   document.body.classList.add('calc-mode');
-  app.className = '';
+  app.className = 'calc-fill';
   app.innerHTML = `<div style="text-align:center;padding-top:120px;"><div class="spinner"></div></div>`;
   try {
     const res = await fetch('/api/config');
