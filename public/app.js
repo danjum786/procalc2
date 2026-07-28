@@ -6,12 +6,7 @@ const POLL_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
 let pollTimer = null;
 
-const brandHeader = `
-  <div class="brand-row">
-    <div class="brand-logo">LOGO</div>
-    <div class="brand-label">Builder Logo</div>
-  </div>
-`;
+const brandHeader = `<div class="brand-row"><img src="/logo.jpeg" alt="ProCalc" /></div>`;
 
 const dotsLoader = `<div class="dots"><span></span><span></span><span></span></div>`;
 
@@ -26,6 +21,14 @@ const reviewIcon = `
     </svg>
   </div>
 `;
+
+const icons = {
+  name: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>',
+  email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 6.5l8 6.5 8-6.5"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4 6.7 2 2 0 0 1 6 3.5Z"/></svg>',
+  website: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.5 5.3 3.5 8.5s-1.2 6.1-3.5 8.5c-2.3-2.4-3.5-5.3-3.5-8.5S9.7 5.9 12 3.5Z"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>'
+};
 
 function renderMissingLocation() {
   layout.innerHTML = `
@@ -75,20 +78,21 @@ function renderForm() {
         <div class="step-label">Your details</div>
       </div>
       <form id="access-form">
-        <label>Name</label>
-        <input type="text" name="name" required />
-        <label>Email</label>
-        <input type="email" name="email" required />
-        <label>Phone</label>
-        <input type="tel" name="phone" />
+        <label>Full name</label>
+        <div class="field-wrap">${icons.name}<input type="text" name="name" placeholder="e.g. Jordan Miles" required /></div>
+        <label>Email address</label>
+        <div class="field-wrap">${icons.email}<input type="email" name="email" placeholder="you@company.com" required /></div>
+        <label>Phone number</label>
+        <div class="field-wrap">${icons.phone}<input type="tel" name="phone" placeholder="+1 (555) 000-0000" /></div>
         <label>Website</label>
-        <input type="url" name="website" placeholder="https://" />
+        <div class="field-wrap">${icons.website}<input type="url" name="website" placeholder="https://yourbusiness.com" /></div>
         <button class="primary" type="submit">Continue →</button>
         <p class="error" id="form-error">Something went wrong. Please try again.</p>
+        <div class="trust-note">${icons.lock}Your details are only used to set up and verify your calculator.</div>
       </form>
       <div class="footer-row">
         <span class="footer-note">We'll only use this to review your access.</span>
-        <span class="powered-by">Powered by <strong>ProjectScoutIQ</strong></span>
+        <span class="powered-by">Powered by <strong>ProCalc</strong></span>
       </div>
     </div>
   `;
@@ -145,7 +149,7 @@ function renderPending() {
       </div>
       <div class="footer-row">
         <span class="footer-note">This updates automatically - no need to refresh.</span>
-        <span class="powered-by">Powered by <strong>ProjectScoutIQ</strong></span>
+        <span class="powered-by">Powered by <strong>ProCalc</strong></span>
       </div>
     </div>
   `;
