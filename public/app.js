@@ -2,6 +2,11 @@ const layout = document.getElementById('app');
 const params = new URLSearchParams(window.location.search);
 const locationId = params.get('locationId');
 
+// How often we re-check approval status while pending. Set to hourly rather
+// than a short interval, since owner approval is a manual, unhurried step -
+// no need to hammer the backend every few seconds.
+const POLL_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
+
 let pollTimer = null;
 
 const brandHeader = `
@@ -10,6 +15,8 @@ const brandHeader = `
     <div class="brand-label">Builder Logo</div>
   </div>
 `;
+
+const dotsLoader = `<div class="dots"><span></span><span></span><span></span></div>`;
 
 function renderMissingLocation() {
   layout.innerHTML = `
@@ -27,7 +34,7 @@ function ensureLayout() {
   layout.innerHTML = `
     <div class="panel status-panel" id="status-panel"></div>
     <div class="panel preview-panel" id="preview-panel">
-      <div class="preview-loading"><div class="spinner"></div></div>
+      <div class="preview-loading">${dotsLoader}</div>
     </div>
   `;
   loadPreview();
@@ -124,7 +131,7 @@ function renderPending() {
         <div class="step-label">Review</div>
       </div>
       <div class="center-state">
-        <div class="spinner"></div>
+        ${dotsLoader}
       </div>
       <div class="footer-row">
         <span class="footer-note">This updates automatically - no need to refresh.</span>
@@ -190,7 +197,7 @@ async function checkStatus() {
 
 function startPolling() {
   stopPolling();
-  pollTimer = setInterval(checkStatus, 15000);
+  pollTimer = setInterval(checkStatus, POLL_INTERVAL_MS);
 }
 
 function stopPolling() {
