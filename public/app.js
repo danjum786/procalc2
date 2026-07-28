@@ -2,9 +2,6 @@ const layout = document.getElementById('app');
 const params = new URLSearchParams(window.location.search);
 const locationId = params.get('locationId');
 
-// How often we re-check approval status while pending. Set to hourly rather
-// than a short interval, since owner approval is a manual, unhurried step -
-// no need to hammer the backend every few seconds.
 const POLL_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
 let pollTimer = null;
@@ -17,6 +14,18 @@ const brandHeader = `
 `;
 
 const dotsLoader = `<div class="dots"><span></span><span></span><span></span></div>`;
+
+const reviewIcon = `
+  <div class="review-icon-wrap">
+    <div class="review-ring"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 3.5h6a1 1 0 0 1 1 1V5h1.5A1.5 1.5 0 0 1 19 6.5v13A1.5 1.5 0 0 1 17.5 21h-11A1.5 1.5 0 0 1 5 19.5v-13A1.5 1.5 0 0 1 6.5 5H8v-0.5a1 1 0 0 1 1-1Z"/>
+      <path d="M8 5h8"/>
+      <circle cx="12" cy="13.5" r="4"/>
+      <path d="M12 11.7v1.8l1.3 1.1"/>
+    </svg>
+  </div>
+`;
 
 function renderMissingLocation() {
   layout.innerHTML = `
@@ -131,7 +140,8 @@ function renderPending() {
         <div class="step-label">Review</div>
       </div>
       <div class="center-state">
-        ${dotsLoader}
+        ${reviewIcon}
+        <p class="sub" style="margin-top:4px;">Checking your details</p>
       </div>
       <div class="footer-row">
         <span class="footer-note">This updates automatically - no need to refresh.</span>

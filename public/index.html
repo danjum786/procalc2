@@ -213,6 +213,33 @@
     40% { opacity: 1; transform: scale(1); }
   }
 
+  .review-icon-wrap {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .review-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--step-inactive-bg);
+    animation: breathe 2.2s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(0.88); opacity: 0.6; }
+    50% { transform: scale(1); opacity: 1; }
+  }
+  .review-icon-wrap svg {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    color: var(--ink);
+  }
+
   .preview-panel iframe {
     width: 100%;
     height: 100%;
