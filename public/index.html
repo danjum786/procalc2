@@ -22,33 +22,54 @@
     --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
   body {
     font-family: var(--sans);
-    margin: 0;
-    padding: 40px 16px;
+    padding: 32px 16px;
     background: var(--bg-outer);
     color: var(--ink);
-    display: flex;
-    justify-content: center;
   }
-  .card {
-    width: 100%;
-    max-width: 560px;
+  .layout {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+  }
+  @media (max-width: 860px) {
+    .layout { flex-direction: column; }
+  }
+
+  .panel {
     background: var(--card-bg);
     border-radius: var(--radius-card);
     overflow: hidden;
     box-shadow: 0 20px 50px rgba(20, 18, 12, 0.18);
   }
+  .status-panel {
+    flex: 0 0 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 860px) {
+    .status-panel { flex: 1 1 auto; }
+  }
+  .preview-panel {
+    flex: 1 1 auto;
+    min-height: 620px;
+    display: flex;
+    flex-direction: column;
+  }
+
   .card-header {
     background: var(--header-bg);
-    padding: 24px 28px 26px;
-    position: relative;
+    padding: 24px 26px 22px;
   }
   .brand-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
   .brand-logo {
     width: 30px;
@@ -60,7 +81,6 @@
     justify-content: center;
     font-size: 8px;
     font-weight: 600;
-    letter-spacing: 0.03em;
     color: var(--ink-muted);
     flex-shrink: 0;
   }
@@ -73,77 +93,69 @@
   }
   h1 {
     font-family: var(--serif);
-    font-size: 26px;
+    font-size: 23px;
     font-weight: 400;
     margin: 0 0 8px;
     line-height: 1.25;
   }
   p.sub {
-    font-size: 14px;
+    font-size: 13.5px;
     color: var(--ink-muted);
     margin: 0;
     line-height: 1.5;
   }
-  .card-body { padding: 26px 28px 28px; }
+  .card-body { padding: 24px 26px 26px; flex: 1; display: flex; flex-direction: column; }
   .steps {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
   }
   .step-dot {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     background: var(--step-inactive-bg);
     color: var(--step-inactive-text);
     flex-shrink: 0;
   }
   .step-dot.active { background: var(--accent); color: var(--accent-text); }
-  .step-line { width: 26px; height: 1px; background: var(--border); }
-  .step-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink);
-    margin-left: 4px;
-  }
+  .step-line { width: 22px; height: 1px; background: var(--border); }
+  .step-label { font-size: 12.5px; font-weight: 600; margin-left: 2px; }
   label {
     display: block;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
-    margin-bottom: 7px;
-    margin-top: 18px;
+    margin-bottom: 6px;
+    margin-top: 16px;
   }
   label:first-of-type { margin-top: 0; }
   input {
     width: 100%;
-    padding: 12px 14px;
+    padding: 11px 13px;
     border: 1.5px solid var(--border);
     border-radius: var(--radius-field);
-    font-size: 14px;
+    font-size: 13.5px;
     font-family: var(--sans);
     color: var(--ink);
     background: #fff;
   }
-  input:focus {
-    outline: none;
-    border-color: var(--ink);
-  }
+  input:focus { outline: none; border-color: var(--ink); }
   input::placeholder { color: #b7b2a4; }
   button.primary {
-    margin-top: 24px;
+    margin-top: 22px;
     width: 100%;
-    padding: 14px;
+    padding: 13px;
     background: var(--accent);
     color: var(--accent-text);
     border: none;
     border-radius: var(--radius-field);
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 600;
     cursor: pointer;
     font-family: var(--sans);
@@ -153,66 +165,47 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
+    margin-top: auto;
     padding-top: 16px;
     border-top: 1px solid var(--border);
   }
-  .footer-note { font-size: 11px; color: var(--ink-muted); }
-  .powered-by {
-    font-size: 11px;
-    color: var(--ink-muted);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
+  .footer-note { font-size: 10.5px; color: var(--ink-muted); }
+  .powered-by { font-size: 10.5px; color: var(--ink-muted); }
   .powered-by strong { color: var(--ink); font-weight: 700; }
-  .error {
-    color: #b3392c;
-    font-size: 13px;
-    margin-top: 10px;
-    display: none;
-  }
-  .center-state { text-align: center; padding: 10px 4px 4px; }
-  .state-icon { font-size: 34px; margin-bottom: 14px; }
+  .error { color: #b3392c; font-size: 12.5px; margin-top: 10px; display: none; }
+  .center-state { text-align: center; margin: auto; padding: 20px 4px; }
+  .state-icon { font-size: 36px; margin-bottom: 12px; }
   .spinner {
-    width: 32px; height: 32px;
+    width: 30px; height: 30px;
     border: 3px solid var(--step-inactive-bg);
     border-top-color: var(--ink);
     border-radius: 50%;
-    margin: 0 auto 18px;
+    margin: 0 auto 16px;
     animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  iframe.calculator {
-    width: 100%;
-    height: 78vh;
-    border: none;
-    border-radius: var(--radius-field);
-  }
-  .card-body.full-bleed { padding: 0; }
 
-  html, body { height: 100%; margin: 0; }
-  body.calc-mode {
-    padding: 0;
-    display: block;
-  }
-  #app.calc-fill { height: 100%; }
-  .calc-view {
+  .preview-panel iframe {
     width: 100%;
     height: 100%;
+    min-height: 620px;
     border: none;
     display: block;
+    flex: 1;
   }
+  .preview-loading { margin: auto; text-align: center; padding: 40px; }
 </style>
 </head>
 <body>
-  <div class="card" id="app">
-    <div class="card-header">
-      <div class="brand-row">
-        <div class="brand-logo">LOGO</div>
-        <div class="brand-label">Builder Logo</div>
+  <div class="layout" id="app">
+    <div class="panel status-panel" id="status-panel">
+      <div class="card-header">
+        <div class="brand-row">
+          <div class="brand-logo">LOGO</div>
+          <div class="brand-label">Builder Logo</div>
+        </div>
+        <div class="spinner" style="margin-top:20px;"></div>
       </div>
-      <div class="spinner" style="margin-top:20px;"></div>
     </div>
   </div>
 
