@@ -10,18 +10,6 @@ const brandHeader = `<div class="brand-row"><img src="/logo.png" alt="ProCalc" /
 
 const dotsLoader = `<div class="dots"><span></span><span></span><span></span></div>`;
 
-const reviewIcon = `
-  <div class="review-icon-wrap">
-    <div class="review-ring"></div>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M9 3.5h6a1 1 0 0 1 1 1V5h1.5A1.5 1.5 0 0 1 19 6.5v13A1.5 1.5 0 0 1 17.5 21h-11A1.5 1.5 0 0 1 5 19.5v-13A1.5 1.5 0 0 1 6.5 5H8v-0.5a1 1 0 0 1 1-1Z"/>
-      <path d="M8 5h8"/>
-      <circle cx="12" cy="13.5" r="4"/>
-      <path d="M12 11.7v1.8l1.3 1.1"/>
-    </svg>
-  </div>
-`;
-
 const icons = {
   name: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>',
   email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 6.5l8 6.5 8-6.5"/></svg>',
@@ -119,7 +107,7 @@ function renderForm() {
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error('submit failed');
-      renderPending();
+      renderPending(payload);
       startPolling();
     } catch (err) {
       document.getElementById('form-error').style.display = 'block';
@@ -129,23 +117,44 @@ function renderForm() {
   });
 }
 
-function renderPending() {
+function renderPending(details) {
   ensureLayout();
+  const d = details || {};
+  const val = (x) => x && String(x).trim() ? x : '—';
   document.getElementById('status-panel').innerHTML = `
     <div class="card-header">${brandHeader}
-      <h1>Reviewing your details</h1>
-      <p class="sub">We're reviewing your details now. Once approved, we'll send you the embed code for your live website.</p>
-    </div>
-    <div class="card-body">
       <div class="steps">
         <div class="step-dot">1</div>
         <div class="step-line"></div>
         <div class="step-dot active">2</div>
         <div class="step-label">Review</div>
       </div>
-      <div class="center-state">
-        ${reviewIcon}
-        <p class="sub" style="margin-top:4px;">Checking your details</p>
+    </div>
+    <div class="card-body">
+      <div class="pending-hero">
+        <div class="pending-visual">
+          <div class="orbit-ring">
+            <div class="orb-sq"></div>
+            <div class="orb-sq orb-sq2"></div>
+          </div>
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring p2"></div>
+          <div class="pending-core">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <g class="hand"><line x1="12" y1="12" x2="12" y2="7"/></g>
+            </svg>
+          </div>
+        </div>
+        <div class="status-chip"><span class="blink"></span>Pending approval</div>
+        <h1>We've received your information</h1>
+        <p class="sub">Our team is reviewing your request. You'll get an email at <strong>${val(d.email)}</strong> the moment your calculator is approved.</p>
+        <div class="summary-card">
+          <div class="summary-row"><span class="k">${icons.name}Full name</span><span class="v">${val(d.name)}</span></div>
+          <div class="summary-row"><span class="k">${icons.email}Email</span><span class="v">${val(d.email)}</span></div>
+          <div class="summary-row"><span class="k">${icons.phone}Phone</span><span class="v">${val(d.phone)}</span></div>
+          <div class="summary-row"><span class="k">${icons.website}Website</span><span class="v">${val(d.website)}</span></div>
+        </div>
       </div>
       <div class="footer-row">
         <span class="footer-note">This updates automatically - no need to refresh.</span>
@@ -196,7 +205,7 @@ async function checkStatus() {
       stopPolling();
       renderForm();
     } else if (data.status === 'pending') {
-      renderPending();
+      renderPending(data);
     } else if (data.status === 'approved') {
       stopPolling();
       renderApproved();
