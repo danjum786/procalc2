@@ -6,7 +6,7 @@ const POLL_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
 let pollTimer = null;
 
-const brandHeader = `<div class="brand-row"><img src="/logo.jpeg" alt="ProCalc" /></div>`;
+const brandHeader = `<div class="brand-row"><img src="/logo.png" alt="ProCalc" /></div>`;
 
 const dotsLoader = `<div class="dots"><span></span><span></span><span></span></div>`;
 
