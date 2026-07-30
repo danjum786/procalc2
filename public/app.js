@@ -147,8 +147,8 @@ function renderPending(details) {
           </div>
         </div>
         <div class="status-chip"><span class="blink"></span>Pending approval</div>
-        <h1>We've received your information</h1>
-        <p class="sub">Our team is reviewing your request. You'll get an email at <strong>${val(d.email)}</strong> the moment your calculator is approved.</p>
+        <h1>We've added you to the queue.</h1>
+        <p class="sub">We will be in contact when your release slot becomes available. <br> Please note: a lead magnet calculator converts the most clients when you actively driven traffic to it.</p>
         <div class="summary-card">
           <div class="summary-row"><span class="k">${icons.name}Full name</span><span class="v">${val(d.name)}</span></div>
           <div class="summary-row"><span class="k">${icons.email}Email</span><span class="v">${val(d.email)}</span></div>
