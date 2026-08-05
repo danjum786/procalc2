@@ -71,7 +71,7 @@ function renderForm() {
         <label>Email address</label>
         <div class="field-wrap">${icons.email}<input type="email" name="email" placeholder="you@company.com" required /></div>
         <label>Phone number</label>
-        <div class="field-wrap">${icons.phone}<input type="tel" name="phone" placeholder="+1 (555) 000-0000" /></div>
+        <div class="field-wrap">${icons.phone}<input type="tel" name="phone" placeholder="+61 400 000 000" /></div>
         <label>Website</label>
         <div class="field-wrap">${icons.website}<input type="url" name="website" placeholder="https://yourbusiness.com" /></div>
         <button class="primary" type="submit">Continue →</button>
